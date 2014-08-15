@@ -25,26 +25,23 @@ shared_examples "it validates the single cardinality of the field" do
   end
 end
 
-module Hydra
-  module Validations
-    describe SingleCardinalityValidator do
-      before(:all) do
-        class Validatable
-          include ActiveModel::Validations
-          include Hydra::Validations
-          attr_accessor :field
-        end
-      end
-      before(:each) { Validatable.clear_validators! }
-      subject { Validatable.new }
-      describe ".validates" do
-        before { Validatable.validates :field, single_cardinality: true }
-        it_behaves_like "it validates the single cardinality of the field"
-      end
-      describe ".validates_single_cardinality_of" do
-        before { Validatable.validates_single_cardinality_of :field }
-        it_behaves_like "it validates the single cardinality of the field"
-      end
+describe SingleCardinalityValidator do
+  before(:all) do
+    class Validatable
+      include ActiveModel::Validations
+      include Hydra::Validations
+      attr_accessor :field
     end
   end
+  before(:each) { Validatable.clear_validators! }
+  subject { Validatable.new }
+  describe ".validates" do
+    before { Validatable.validates :field, single_cardinality: true }
+    it_behaves_like "it validates the single cardinality of the field"
+  end
+  describe ".validates_single_cardinality_of" do
+    before { Validatable.validates_single_cardinality_of :field }
+    it_behaves_like "it validates the single cardinality of the field"
+  end
 end
+
