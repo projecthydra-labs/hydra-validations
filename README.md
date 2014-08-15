@@ -1,4 +1,4 @@
-active-model-validators
+hydra-validators
 =======================
 
-Custom validators based on ActiveModel::Validations
+Custom validators for Hydra applications based on ActiveModel::Validations.
