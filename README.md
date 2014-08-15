@@ -1,9 +1,7 @@
 hydra-validations
 =======================
 
-Custom validations based on ActiveModel::Validations.
-
-Although intended for a Hydra audience, the library has no Hydra-related dependencies.
+Custom validations for Hydra applications based on ActiveModel::Validations.
 
 ### Installation
 
