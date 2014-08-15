@@ -11,3 +11,5 @@ module Hydra
 
   end
 end
+
+Dir[File.dirname(__FILE__) + "/validations/*validator.rb"].each { |file| require file }
