@@ -2,4 +2,5 @@
 /tmp
 /spec/tmp
 /.bundle
+/pkg
 Gemfile.lock
