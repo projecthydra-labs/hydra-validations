@@ -1,15 +1,16 @@
+require "active_model"
 require "hydra/validations/version"
-require "hydra/validations/helper_methods"
 
 module Hydra
   module Validations
     extend ActiveSupport::Concern
 
     included do
+      extend HelperMethods
       include HelperMethods
     end
 
   end
 end
 
-Dir[File.dirname(__FILE__) + "/validations/*validator.rb"].each { |file| require file }
+Dir[File.dirname(__FILE__) + "/validations/*.rb"].each { |file| require file }

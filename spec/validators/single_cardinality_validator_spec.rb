@@ -25,7 +25,7 @@ shared_examples "it validates the single cardinality of the field" do
   end
 end
 
-describe SingleCardinalityValidator do
+describe Hydra::Validations::SingleCardinalityValidator do
   before(:all) do
     class Validatable
       include ActiveModel::Validations
@@ -34,6 +34,7 @@ describe SingleCardinalityValidator do
     end
   end
   before(:each) { Validatable.clear_validators! }
+  after(:all) { Object.send(:remove_const, :Validatable) }
   subject { Validatable.new }
   describe ".validates" do
     before { Validatable.validates :field, single_cardinality: true }

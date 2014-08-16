@@ -1,7 +1,12 @@
 hydra-validations
 =======================
 
-Custom validations for Hydra applications based on ActiveModel::Validations.
+Custom validators for Hydra applications added to ActiveModel::Validations.
+
+### Dependencies
+
+* ActiveModel 4.x
+* ActiveFedora 7.x
 
 ### Installation
 
@@ -17,22 +22,33 @@ and
 bundle install
 ```
 
-### Usage
+### Example
 
-Use with ActiveModel::Validations methods:
-
-```ruby
-validates :my_attr, single_cardinality: true
-```
-
-To include helper methods:
+With a PORO, we have to include ActiveModel::Validations.  
+ActiveRecord::Base and ActiveFedora::Base already include ActiveModel::Validations.
 
 ```ruby
-include Hydra::Validations
-```
+class Foo
+  include ActiveModel::Validations 
+  include Hydra::Validations
+  attr_accessor :field
+  validates :field, single_cardinality: true
+end
 
-For example:
-
-```ruby
-validates_single_cardinality_of :my_attr
+> Foo.validators
+ => [#<Hydra::Validations::SingleCardinalityValidator:0x007fb91d1e9460 @attributes=[:field], @options={}>] 
+> f = Foo.new
+ => #<Foo:0x007fb91d1c9188> 
+> f.field = "foo"
+ => "foo" 
+> f.valid?
+ => true 
+> f.field = ["foo"]
+ => ["foo"] 
+> f.valid?
+ => true 
+> f.field = ["foo", "bar"]
+ => ["foo", "bar"] 
+> f.valid?
+ => false 
 ```
