@@ -1,7 +1,7 @@
 hydra-validations
 =======================
 
-Custom validators for Hydra applications added to ActiveModel::Validations.
+Custom validators for Hydra applications based on ActiveModel::Validations.
 
 ### Dependencies
 
