@@ -23,7 +23,7 @@ module Hydra
       def initialize(options = {})
         super
         attributes.each do |attr|
-          raise ArgumentError, "Cannot validate uniqueness on a multi-valued attribute: #{attribute}." if options[:class].multiple?(attr)
+          raise ArgumentError, "Cannot validate uniqueness on a multi-valued attribute: #{attr}." if options[:class].multiple?(attr)
         end
       end
 
