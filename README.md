@@ -5,6 +5,7 @@ Custom validators for Hydra applications based on ActiveModel::Validations.
 
 ### Dependencies
 
+* Ruby >= 1.9.3
 * ActiveModel 4.x
 * ActiveFedora 7.x
 
@@ -28,27 +29,27 @@ With a PORO, we have to include ActiveModel::Validations.
 ActiveRecord::Base and ActiveFedora::Base already include ActiveModel::Validations.
 
 ```ruby
-class Foo
+class Validatable
   include ActiveModel::Validations 
   include Hydra::Validations
   attr_accessor :field
   validates :field, single_cardinality: true
 end
 
-> Foo.validators
+> Validatable.validators
  => [#<Hydra::Validations::SingleCardinalityValidator:0x007fb91d1e9460 @attributes=[:field], @options={}>] 
-> f = Foo.new
- => #<Foo:0x007fb91d1c9188> 
-> f.field = "foo"
+> v = Validatable.new
+ => #<Validatable:0x007fb91d1c9188> 
+> v.field = "foo"
  => "foo" 
-> f.valid?
+> v.valid?
  => true 
-> f.field = ["foo"]
+> v.field = ["foo"]
  => ["foo"] 
-> f.valid?
+> v.valid?
  => true 
-> f.field = ["foo", "bar"]
+> v.field = ["foo", "bar"]
  => ["foo", "bar"] 
-> f.valid?
+> v.valid?
  => false 
 ```

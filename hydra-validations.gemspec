@@ -6,12 +6,14 @@ require 'hydra/validations/version'
 Gem::Specification.new do |spec|
   spec.name          = "hydra-validations"
   spec.version       = Hydra::Validations::VERSION
+  spec.platform      = Gem::Platform::RUBY
   spec.authors       = ["dchandekstark"]
   spec.email         = ["dchandekstark@gmail.com"]
   spec.summary       = %q{Validations for Hydra applications, based on ActiveModel::Validations}
   spec.description   = %q{Validations for Hydra applications, based on ActiveModel::Validations}
   spec.homepage      = "https://github.com/duke-libraries/hydra-validations"
   spec.license       = "APACHE2"
+  spec.required_ruby_version = ">= 1.9.3"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
