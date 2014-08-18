@@ -1,4 +1,3 @@
-require 'active_model'
 require 'hydra/validations'
 
 RSpec.configure do |config|

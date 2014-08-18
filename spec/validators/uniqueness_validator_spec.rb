@@ -47,8 +47,11 @@ describe Hydra::Validations::UniquenessValidator do
         Validatable.clear_validators!
         Validatable.validates_uniqueness_of :title, solr_name: "title_ssi"
       end
-      it_behaves_like "it validates the single cardinality of a scalar attribute" do
-        let(:attribute) { :title }
+      context "cardinality validation" do
+        before { allow(Validatable).to receive(:exists?) { false } }
+        it_behaves_like "it validates the single cardinality of a scalar attribute" do
+          let(:attribute) { :title }
+        end
       end
       context "when the record is new" do
         before { allow(subject).to receive(:persisted?) { false } }
@@ -68,8 +71,11 @@ describe Hydra::Validations::UniquenessValidator do
         Validatable.clear_validators!
         Validatable.validates_uniqueness_of :source, solr_name: "source_ssim"
       end
-      it_behaves_like "it validates the single cardinality of an enumerable attribute" do
-        let(:attribute) { :source }
+      context "cardinality validation" do
+        before { allow(Validatable).to receive(:exists?) { false } }
+        it_behaves_like "it validates the single cardinality of an enumerable attribute" do
+          let(:attribute) { :source }
+        end
       end
       context "when the record is new" do
         before { allow(subject).to receive(:persisted?) { false } }

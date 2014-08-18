@@ -1,3 +1,5 @@
+require 'hydra/validations'
+
 module Hydra
   module Validations
     #
