@@ -3,6 +3,9 @@ hydra-validations
 
 Custom validators for Hydra applications, based on ActiveModel::Validations.
 
+[![Build Status](https://travis-ci.org/projecthydra-labs/hydra-validations.svg?branch=master)](https://travis-ci.org/projecthydra-labs/hydra-validations)
+[![Gem Version](https://badge.fury.io/rb/hydra-validations.svg)](http://badge.fury.io/rb/hydra-validations)
+
 ## Dependencies
 
 * Ruby >= 1.9.3
