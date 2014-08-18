@@ -1,28 +1,9 @@
 require 'spec_helper'
+require 'support/shared_examples_for_validators'
 
-shared_examples "it validates the single cardinality of the field" do
-  it "should be valid when the field value is nil" do
-    subject.field = nil
-    expect(subject).to be_valid
-  end
-  it "should be valid when the field value is a scalar" do
-    subject.field = "foo"
-    expect(subject).to be_valid
-  end
-  context "when the field value is an enumerable" do
-    it "should be valid if the value is empty" do
-      subject.field = []
-      expect(subject).to be_valid
-    end
-    it "should be valid if the value has one element" do
-      subject.field = ["foo"]
-      expect(subject).to be_valid
-    end
-    it "should be invalid if the value has more than one element" do
-      subject.field = ["foo", "bar"]
-      expect(subject).not_to be_valid      
-    end
-  end
+shared_examples "it validates the single cardinality of the attribute" do
+  it_behaves_like "it validates the single cardinality of a scalar attribute"
+  it_behaves_like "it validates the single cardinality of an enumerable attribute"
 end
 
 describe Hydra::Validations::SingleCardinalityValidator do
@@ -38,11 +19,15 @@ describe Hydra::Validations::SingleCardinalityValidator do
   subject { Validatable.new }
   describe ".validates" do
     before { Validatable.validates :field, single_cardinality: true }
-    it_behaves_like "it validates the single cardinality of the field"
+    it_behaves_like "it validates the single cardinality of the attribute" do
+      let(:attribute) { :field }
+    end
   end
   describe ".validates_single_cardinality_of" do
     before { Validatable.validates_single_cardinality_of :field }
-    it_behaves_like "it validates the single cardinality of the field"
+    it_behaves_like "it validates the single cardinality of the attribute" do
+      let(:attribute) { :field }
+    end
   end
 end
 

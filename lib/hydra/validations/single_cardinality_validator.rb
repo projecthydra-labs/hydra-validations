@@ -1,8 +1,11 @@
 #
 # SingleCardinalityValidator - validates that an enumerator value has size 0 or 1
 #
-#    validates :my_attr, single_cardinality: true
-#    validates_single_cardinality_of :my_attr
+#    validates :myattr, single_cardinality: true
+#    validates_single_cardinality_of :myattr
+#
+# Blank and nil values are considered valid (even without :allow_blank or :allow_nil
+# validator options).
 #
 module Hydra
   module Validations
