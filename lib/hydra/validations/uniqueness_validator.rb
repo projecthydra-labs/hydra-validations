@@ -1,4 +1,5 @@
 require 'hydra/validations'
+require 'hydra/validations/single_cardinality_validator'
 
 module Hydra
   module Validations
