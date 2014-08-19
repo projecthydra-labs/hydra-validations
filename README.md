@@ -28,28 +28,83 @@ bundle install
 
 ## Validators
 
-See also the source code andn spec tests.
+See also the source code and spec tests.
 
-### UniquenessValidator (ActiveFedora)
+**FormatValidator** - Extends the ActiveModel version to validate the format of *each member* of an enumerable attribute value.
+
+See documentation for ActiveModel::Validations::FormatValidator for usage and options.
 
 ```ruby
-class Validatable < ActiveFedora::Base
+class FormatValidatable
+  include ActiveModel::Validations # required if not already included in class
+  include Hydra::Validations
+  attr_accessor :field
+  validates :field, format: { with: /\A[[:alpha:]]+\Z/ }
+  # ... or
+  # validates_format_of :field, with: /\A[[:alpha:]]+\Z/
+end
+
+> v = FormatValidatable.new
+ => #<FormatValidatable:0x007ffc55175300> 
+> v.field = ["foo", "bar"]
+ => ["foo", "bar"] 
+> v.valid?
+ => true 
+> v.field = ["foo1", "bar2"]
+ => ["foo1", "bar2"] 
+> v.valid?
+ => false 
+> v.errors[:field]
+ => ["value \"foo1\" is invalid", "value \"bar2\" is invalid"] 
+> v.errors.full_messages
+ => ["Field value \"foo1\" is invalid", "Field value \"bar2\" is invalid"]
+```
+
+**InclusionValidator** - Extends the ActiveModel version to validate inclusion of *each member* of an enumerable attribute value.
+
+See documentation for ActiveModel::Validations::InclusionValidator for usage and options.
+
+```ruby
+class InclusionValidatable
+  include ActiveModel::Validations # required if not already included in class
+  include Hydra::Validations
+  attr_accessor :field
+  validates :field, inclusion: { in: ["foo", "bar", "baz"] }
+end
+
+> v = InclusionValidatable.new
+ => #<InclusionValidatable:0x007ffc53079318> 
+> v.field = ["foo", "bar"]
+ => ["foo", "bar"] 
+> v.valid?
+ => true 
+> v.field = ["foo", "bar", "spam", "eggs"]
+ => ["foo", "bar", "spam", "eggs"] 
+> v.valid?
+ => false 
+> v.errors[:field]
+ => ["value \"spam\" is not included in the list", "value \"eggs\" is not included in the list"] 
+> v.errors.full_messages
+ => ["Field value \"spam\" is not included in the list", "Field value \"eggs\" is not included in the list"]
+```
+
+**UniquenessValidator** - Validates the uniqueness of an attribute based on a Solr index query.
+
+```ruby
+class UniquenessValidatable < ActiveFedora::Base
   include Hydra::Validations
   has_metadata name: 'descMetadata', type: ActiveFedora::QualifiedDublinCoreDatastream
   has_attributes :title, datastream: 'descMetadata', multiple: false
   # Can use with multi-value attributes, but single cardinality is required.
   # See SingleCardinalityValidator below.
   has_attributes :source, datastream: 'descMetadata', multiple: true
-
-  # validates_uniqueness_of helper method
+  validates :source, uniqueness: { solr_name: "source_ssim" }
+  # ... or using helper method
   validates_uniqueness_of :title, solr_name: "title_ssi"
-
-  # Using `validates' with options
-  validates :source, uniqueness: { solr_name: "subject_ssim" }
 end
 ```
 
-### SingleCardinalityValidatory (Can be used with POROs)
+**SingleCardinalityValidatory** - Validates that the attribute value is a scaler or single-member enumerable.
 
 ```ruby
 class Validatable
