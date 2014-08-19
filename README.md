@@ -30,7 +30,9 @@ bundle install
 
 See also the source code and spec tests.
 
-**FormatValidator** - Extends the ActiveModel version to validate the format of *each member* of an enumerable attribute value.
+### FormatValidator
+
+Extends the ActiveModel version to validate the format of *each member* of an enumerable attribute value.
 
 See documentation for ActiveModel::Validations::FormatValidator for usage and options.
 
@@ -60,7 +62,9 @@ end
  => ["Field value \"foo1\" is invalid", "Field value \"bar2\" is invalid"]
 ```
 
-**InclusionValidator** - Extends the ActiveModel version to validate inclusion of *each member* of an enumerable attribute value.
+### InclusionValidator
+
+Extends the ActiveModel version to validate inclusion of *each member* of an enumerable attribute value.
 
 See documentation for ActiveModel::Validations::InclusionValidator for usage and options.
 
@@ -88,7 +92,9 @@ end
  => ["Field value \"spam\" is not included in the list", "Field value \"eggs\" is not included in the list"]
 ```
 
-**UniquenessValidator** - Validates the uniqueness of an attribute based on a Solr index query.
+### UniquenessValidator (ActiveFedora)
+
+Validates the uniqueness of an attribute based on a Solr index query.
 
 ```ruby
 class UniquenessValidatable < ActiveFedora::Base
@@ -104,7 +110,9 @@ class UniquenessValidatable < ActiveFedora::Base
 end
 ```
 
-**SingleCardinalityValidatory** - Validates that the attribute value is a scaler or single-member enumerable.
+### SingleCardinalityValidatory
+
+Validates that the attribute value is a scaler or single-member enumerable.
 
 ```ruby
 class Validatable
