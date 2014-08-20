@@ -3,7 +3,7 @@ require 'hydra/validations/enumerable_behavior'
 module Hydra
   module Validations
     #
-    # InclusionValidation - Adds EnumerableBehavior to ActiveModel's InclusionValidator
+    # InclusionValidator - Adds EnumerableBehavior to ActiveModel's InclusionValidator
     #
     # See ActiveModel::Validations::InclusionValidator for usage and options
     #
