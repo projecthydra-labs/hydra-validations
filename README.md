@@ -10,7 +10,6 @@ Custom validators for Hydra applications, based on ActiveModel::Validations.
 
 * Ruby >= 1.9.3
 * ActiveModel 4.x
-* ActiveFedora 7.x
 
 ## Installation
 
@@ -92,9 +91,11 @@ end
  => ["Field value \"spam\" is not included in the list", "Field value \"eggs\" is not included in the list"]
 ```
 
-### UniquenessValidator (ActiveFedora)
+### UniquenessValidator
 
 Validates the uniqueness of an attribute based on a Solr index query.
+
+Intended for ActiveFedora 7.x.
 
 ```ruby
 class UniquenessValidatable < ActiveFedora::Base
