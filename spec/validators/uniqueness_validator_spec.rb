@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'active_fedora'
 require 'support/shared_examples_for_validators'
 
 shared_examples "it validates the uniqueness of the attribute value" do
@@ -20,11 +19,23 @@ end
 describe Hydra::Validations::UniquenessValidator do
 
   before(:all) do
-    class Validatable < ActiveFedora::Base
+    class Validatable
+      def self.exists?(*args)
+      end
+      def self.name
+        'Validatable'
+      end
+      def persisted?
+      end
+      def initialize(attributes = {})
+        attributes.each do |k,v|
+          send("#{k}=", v)
+        end
+      end
+      include ActiveModel::Validations
       include Hydra::Validations
-      has_metadata name: 'descMetadata', type: ActiveFedora::QualifiedDublinCoreDatastream
-      has_attributes :title, datastream: 'descMetadata', multiple: false
-      has_attributes :source, datastream: 'descMetadata', multiple: true
+      attr_accessor :pid, :title, :source
+      alias_method :id, :pid
     end
   end
 
@@ -88,7 +99,7 @@ describe Hydra::Validations::UniquenessValidator do
         it_behaves_like "it validates the uniqueness of the attribute value" do
           let(:conditions) { {"source_ssim" => subject.source.first, "-id" => subject.pid} }
         end
-      end      
+      end
     end
   end
 end
