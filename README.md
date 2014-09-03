@@ -111,7 +111,7 @@ class UniquenessValidatable < ActiveFedora::Base
 end
 ```
 
-### SingleCardinalityValidatory
+### SingleCardinalityValidator
 
 Validates that the attribute value is a scaler or single-member enumerable.
 
