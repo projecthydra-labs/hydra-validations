@@ -113,7 +113,7 @@ end
 
 ### SingleCardinalityValidator
 
-Validates that the attribute value is a scaler or single-member enumerable.
+Validates that the attribute value is a scalar or single-member enumerable.
 
 ```ruby
 class Validatable
