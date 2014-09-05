@@ -20,13 +20,9 @@ describe Hydra::Validations::UniquenessValidator do
 
   before(:all) do
     class Validatable
-      def self.exists?(*args)
-      end
-      def self.name
-        'Validatable'
-      end
-      def persisted?
-      end
+      def self.exists?(*args); end
+      def self.name; 'Validatable'; end
+      def persisted?; end
       def initialize(attributes = {})
         attributes.each do |k,v|
           send("#{k}=", v)

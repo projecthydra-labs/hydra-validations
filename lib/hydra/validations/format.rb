@@ -1,21 +1,25 @@
-require 'hydra/validations/enumerable_behavior'
+require 'hydra/validations/enumerable'
 
 module Hydra
   module Validations
     #
-    # FormatValidator - Add EnumerableBehavior to ActiveModel's FormatValidator
+    # FormatValidator - Validates attribute value format with support for enumerables.
     #
     # See ActiveModel::Validations::FormatValidator for usage and options.
     #
-    class FormatValidator < ActiveModel::Validations::FormatValidator
-      include EnumerableBehavior
-    end
+    class FormatValidator < EnumerableValidator
 
-    module HelperMethods
-      def validates_format_of *attr_names
-        validates_with FormatValidator, _merge_attributes(attr_names)
+      def initialize(options = {})
+        member_validator = ActiveModel::Validations::FormatValidator.new(options)
+        super(member_validator)
       end
-    end
 
+      module HelperMethods
+        def validates_format_of *attr_names
+          validates_with FormatValidator, _merge_attributes(attr_names)
+        end
+      end
+
+    end
   end
 end
