@@ -31,3 +31,79 @@ shared_examples "it validates the single cardinality of a scalar attribute" do
     expect(subject).to be_valid
   end
 end
+
+shared_examples "an enumerable validator" do
+
+  let(:record) { record_class.new }
+
+  before do
+    record_class.validates attribute, opts
+    allow(record).to receive(attribute) { value }
+  end
+
+  context "when the value is nil" do
+    let(:value) { nil }
+    context "and `allow_nil` is true" do
+      let(:opts) { options.merge(allow_nil: true) }
+      it "should be valid" do
+        expect(record).to be_valid
+      end
+    end
+    context "and `allow_nil` is not true" do
+      let(:opts) { options }
+      it "should validate the value" do
+        expect_any_instance_of(described_class).to receive(:validate_each).with(record, attribute, value)
+        record.valid?
+      end
+    end
+  end
+
+  context "when the value is a blank scalar" do
+    let(:value) { "" }
+    context "and `allow_blank` is true" do
+      let(:opts) { options.merge(allow_blank: true) }
+      it "should be valid" do
+        expect(record).to be_valid
+      end
+    end
+    context "and `allow_blank` is not true" do
+      let(:opts) { options }
+      it "should validate the value" do
+        expect_any_instance_of(described_class).to receive(:validate_each).with(record, attribute, value)
+        record.valid?
+      end
+    end
+  end
+
+  context "when the value is is a non-blank scalar" do
+    let(:value) { "foo" }
+    let(:opts) { options }
+    it "should validate the value" do
+      expect_any_instance_of(described_class).to receive(:validate_each).with(record, attribute, value)
+      record.valid?
+    end
+  end
+
+  context "when the value is an empty enumerable" do
+    let(:value) { [] }
+    context "and `allow_blank` is true" do
+      let(:opts) { options.merge(allow_blank: true) }
+      it "should be valid" do
+        expect(record).to be_valid
+      end
+    end
+    context "and `allow_empty` is true" do
+      let(:opts) { options.merge(allow_empty: true) }
+      it "should be valid" do
+        expect(record).to be_valid
+      end
+    end
+    context "and neither `allow_blank` nor `allow_empty` is true" do
+      let(:opts) { options }
+      it "should be invalid" do
+        expect(record).to be_invalid
+      end
+    end
+  end
+
+end
