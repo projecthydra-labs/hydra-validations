@@ -1,5 +1,4 @@
-require 'hydra/validations'
-require 'hydra/validations/cardinality'
+require 'active_support/core_ext/array/wrap'
 
 module Hydra
   module Validations
@@ -25,22 +24,26 @@ module Hydra
     #
     class UniquenessValidator < ActiveModel::EachValidator
 
-      include Cardinality
-
       def check_validity!
-        raise ArgumentError, "UniquenessValidator accepts only a single attribute: #{attribues}" if attributes.length > 1 
-        raise ArgumentError, "UniquenessValidator requires the :solr_name option be present." unless options[:solr_name].present?
+        if attributes.length > 1 
+          raise ArgumentError, "UniquenessValidator accepts only a single attribute: #{attributes}" 
+        end
+        unless options[:solr_name].present?
+          raise ArgumentError, "UniquenessValidator requires the :solr_name option be present." 
+        end
       end
 
       def validate_each(record, attribute, value)
-        # TODO: i18n messages
-        validate_cardinality(:single, record, attribute, value)
-        # Validate uniqueness proper only if value is of single cardinality
-        return if record.errors.added?(attribute, "can't have more than one value") 
-        value = value.first if value.respond_to?(:each)
-        conditions = {options[:solr_name] => value}
-        conditions.merge!("-id" => record.id) if record.persisted?
-        record.errors.add attribute, "has already been taken" if record.class.exists?(conditions)
+        wrapped_value = Array.wrap(value)
+        if wrapped_value.length > 1
+          record.errors.add(attribute, "can't have more than one value") 
+        elsif wrapped_value.empty? 
+          record.errors.add(attribute, "can't be empty") unless options[:allow_empty]
+        else
+          conditions = {options[:solr_name] => wrapped_value.first}
+          conditions.merge!("-id" => record.id) if record.persisted?
+          record.errors.add attribute, "has already been taken" if record.class.exists?(conditions)
+        end
       end
 
     end
