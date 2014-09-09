@@ -27,6 +27,14 @@ bundle install
 
 ## EnumerableBehavior Mixin
 
+Hydra::Validations::EnumerableBehavior is a mixin for an ActiveModel::EachValidator that validates each member of an enumerable value.  See the FormatValidator and InclusionValidator below for examples.
+
+EnumerableBehavior overrides `validate_each(record, attribute, value)` calling `super(record, attribute, member)` for each member of an enumerable value (i.e., responds to `:each`).  The module "fixes" any error messages to include the specific member that failed validation -- for example, `"is invalid"` becomes `"value \"foo1\" is invalid"`, so the full message `"Identifier is invalid"` becomes `"Identifer value \"foo1\" is invalid"`.
+
+**`allow_nil`, `allow_blank`, and `allow_empty`**
+
+With EnumerableBehavior, validation of non-enumerables is unchanged (`validate_each` simply returns `super`); however, the validator options `allow_nil` and `allow_blank` *apply only to the original value* (the enumerable) and not to its members. For example, the value `[""]` with the option `allow_blank: true` will *not* bypass validation. As a result, empty enumerables will fail validation unless `allow_blank` is true or the special enumerable option `allow_empty` is true (that option does not bypass validation for non-enumerables that respond to `:empty?`, e.g., empty strings).
+
 ## Validators
 
 See also the source code and spec tests.
