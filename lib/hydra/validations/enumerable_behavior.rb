@@ -7,10 +7,15 @@ module Hydra
     # Behavior includes 'fixing' each error message to include the specific value
     # which was invalid.
     #
-    # `allow_empty` option can be used instead of `allow_blank` for greater
+    # The `allow_empty` option can be used instead of `allow_blank` for greater
     # clarity and precision with enumerable values. If a validator includes
-    # this mixin, then an empty enumerable value will always be invalid if
-    # `allow_empty` is false or nil.
+    # this mixin, an empty enumerable value will *always* be invalid unless
+    # `allow_empty` is true.
+    #
+    # Note that `allow_nil` and `allow_blank` options apply to the enumerable
+    # value, not to its members. Thus, for example, `allow_blank: true` will
+    # not bypass validation of the value `[""]` even though its member `""` 
+    # is blank.
     #
     module EnumerableBehavior
 

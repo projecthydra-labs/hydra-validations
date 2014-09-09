@@ -25,13 +25,15 @@ and
 bundle install
 ```
 
+## EnumerableBehavior Mixin
+
 ## Validators
 
 See also the source code and spec tests.
 
 ### FormatValidator
 
-Extends the ActiveModel version to validate the format of *each member* of an enumerable attribute value.
+Extends the ActiveModel::Validations::FormatValidator, adding EnumerableBehavior.
 
 See documentation for ActiveModel::Validations::FormatValidator for usage and options.
 
@@ -63,7 +65,7 @@ end
 
 ### InclusionValidator
 
-Extends the ActiveModel version to validate inclusion of *each member* of an enumerable attribute value.
+Extends ActiveModel::Validations::InclusionValidator, adding EnumerableBehavior.
 
 See documentation for ActiveModel::Validations::InclusionValidator for usage and options.
 
@@ -73,6 +75,8 @@ class InclusionValidatable
   include Hydra::Validations
   attr_accessor :field
   validates :field, inclusion: { in: ["foo", "bar", "baz"] }
+  # or using helper method ...
+  # validates_inclusion_of :field, in: ["foo", "bar", "baz"]
 end
 
 > v = InclusionValidatable.new
@@ -103,7 +107,6 @@ class UniquenessValidatable < ActiveFedora::Base
   has_metadata name: 'descMetadata', type: ActiveFedora::QualifiedDublinCoreDatastream
   has_attributes :title, datastream: 'descMetadata', multiple: false
   # Can use with multi-value attributes, but single cardinality is required.
-  # See SingleCardinalityValidator below.
   has_attributes :source, datastream: 'descMetadata', multiple: true
   validates :source, uniqueness: { solr_name: "source_ssim" }
   # ... or using helper method
@@ -111,20 +114,35 @@ class UniquenessValidatable < ActiveFedora::Base
 end
 ```
 
-### SingleCardinalityValidator
+### CardinalityValidator
 
-Validates that the attribute value is a scalar or single-member enumerable.
+Validates the cardinality of the attribute value. 
+
+CardinalityValidator is a subclass of ActiveModel::Validations::LengthValidator which
+"tokenizes" values with `Array.wrap(value)`.  The "cardinality" of the value
+is the length the array. Hence,
+
+- `nil` and empty enumerables have cardinality 0
+- scalar values (including empty string) have cardinality 1.
+
+CardinalityValidator customizes the `:wrong_length`, `:too_short` and `:too_long` messages
+of LengthValidator to use language appropriate to cardinality. You can also override these 
+options.
 
 ```ruby
-class Validatable
+class CardinalityValidatable
   include ActiveModel::Validations # required if not already included in class
   include Hydra::Validations
   attr_accessor :field
-  validates :field, single_cardinality: true
+  validates :field, cardinality: { is: 1 }
+  # or with helper method ...
+  # validates_cardinality_of :field, is: 1
+  # or, for single cardinality (same as above) ...
+  # validates_single_cardinality_of :field
 end
 
-> Validatable.validators
- => [#<Hydra::Validations::SingleCardinalityValidator:0x007fb91d1e9460 @attributes=[:field], @options={}>] 
+> CardinalityValidatable.validators
+ => [#<Hydra::Validations::CardinalityValidator:0x007fb91d1e9460 @attributes=[:field], @options={:is=>1}>] 
 > v = Validatable.new
  => #<Validatable:0x007fb91d1c9188> 
 > v.field = "foo"

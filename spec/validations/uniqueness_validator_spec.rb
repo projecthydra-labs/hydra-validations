@@ -1,21 +1,6 @@
 require 'spec_helper'
 require 'support/shared_examples_for_validators'
 
-shared_examples "it validates the uniqueness of the attribute value" do
-  context "when the value is not taken" do
-    before { allow(Validatable).to receive(:exists?).with(conditions) { false } }
-    it "should be valid" do
-      expect(subject).to be_valid
-    end
-  end
-  context "when the value is taken" do
-    before { allow(Validatable).to receive(:exists?).with(conditions) { true } }
-    it "should not be valid" do
-      expect(subject).not_to be_valid
-    end
-  end
-end
-
 describe Hydra::Validations::UniquenessValidator do
 
   before(:all) do
@@ -41,8 +26,9 @@ describe Hydra::Validations::UniquenessValidator do
 
   after(:all) { Object.send(:remove_const, :Validatable) }
 
+  before(:each) { Validatable.clear_validators! }
+
   describe "exceptions" do
-    before { Validatable.clear_validators! }
     it "cannot be used on more than one attribute at a time" do
       expect { Validatable.validates :title, :source, uniqueness: { solr_name: "snafu_ssim" } }.to raise_error
     end
@@ -52,18 +38,26 @@ describe Hydra::Validations::UniquenessValidator do
   end
 
   describe "validation" do
+
     subject { Validatable.new(pid: "foobar:1", title: "I am Unique!", source: ["Outer Space"]) }
-    context "with a scalar attribute (:multiple=>false)" do
-      before(:all) do
-        Validatable.clear_validators!
-        Validatable.validates_uniqueness_of :title, solr_name: "title_ssi"
-      end
-      context "cardinality validation" do
-        before { allow(Validatable).to receive(:exists?) { false } }
-        it_behaves_like "it validates the single cardinality of a scalar attribute" do
-          let(:attribute) { :title }
+
+    shared_examples "it validates the uniqueness of the attribute value" do
+      context "when the value is not taken" do
+        before { allow(Validatable).to receive(:exists?).with(conditions) { false } }
+        it "should be valid" do
+          expect(subject).to be_valid
         end
       end
+      context "when the value is taken" do
+        before { allow(Validatable).to receive(:exists?).with(conditions) { true } }
+        it "should not be valid" do
+          expect(subject).not_to be_valid
+        end
+      end
+    end
+
+    context "with a scalar attribute (:multiple=>false)" do
+      before { Validatable.validates :title, uniqueness: { solr_name: "title_ssi" } }
       context "when the record is new" do
         before { allow(subject).to receive(:persisted?) { false } }
         it_behaves_like "it validates the uniqueness of the attribute value" do
@@ -77,17 +71,9 @@ describe Hydra::Validations::UniquenessValidator do
         end
       end
     end
+
     context "with an enumerable attribute (:multiple=>true)" do
-      before(:all) do
-        Validatable.clear_validators!
-        Validatable.validates_uniqueness_of :source, solr_name: "source_ssim"
-      end
-      context "cardinality validation" do
-        before { allow(Validatable).to receive(:exists?) { false } }
-        it_behaves_like "it validates the single cardinality of an enumerable attribute" do
-          let(:attribute) { :source }
-        end
-      end
+      before { Validatable.validates :source, uniqueness: { solr_name: "source_ssim" } }
       context "when the record is new" do
         before { allow(subject).to receive(:persisted?) { false } }
         it_behaves_like "it validates the uniqueness of the attribute value" do
@@ -101,5 +87,6 @@ describe Hydra::Validations::UniquenessValidator do
         end
       end
     end
+
   end
 end

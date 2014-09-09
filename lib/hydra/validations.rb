@@ -14,7 +14,7 @@ module Hydra
       protected
       # Overwrites ActiveModel::Validations::ClassMethods, adding :allow_empty
       def _validates_default_keys
-        [:if, :unless, :on, :allow_blank, :allow_nil , :strict, :allow_empty]
+        [:if, :unless, :on, :allow_blank, :allow_nil, :strict, :allow_empty]
       end
     end
 
