@@ -147,7 +147,7 @@ Validates the cardinality of the attribute value.
 
 CardinalityValidator is a subclass of ActiveModel::Validations::LengthValidator which
 "tokenizes" values with `Array.wrap(value)`.  The "cardinality" of the value
-is the length the array. Hence,
+is therefore the length the array. Accordingly,
 
 - `nil` and empty enumerables have cardinality 0
 - scalar values (including empty string) have cardinality 1.
