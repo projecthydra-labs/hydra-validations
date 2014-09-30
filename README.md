@@ -11,6 +11,8 @@ Custom validators for Hydra applications, based on ActiveModel::Validations.
 * Ruby >= 1.9.3
 * ActiveModel 4.x
 
+ActiveFedora 7.x is a run-time dependency of the UniquenessValidator only, and is not provided by this gem.
+
 ## Installation
 
 Include in your Gemfile:
@@ -55,20 +57,27 @@ class FormatValidatable
   # validates_format_of :field, with: /\A[[:alpha:]]+\Z/
 end
 
-> v = FormatValidatable.new
- => #<FormatValidatable:0x007ffc55175300> 
-> v.field = ["foo", "bar"]
- => ["foo", "bar"] 
-> v.valid?
- => true 
-> v.field = ["foo1", "bar2"]
- => ["foo1", "bar2"] 
-> v.valid?
- => false 
-> v.errors[:field]
- => ["value \"foo1\" is invalid", "value \"bar2\" is invalid"] 
-> v.errors.full_messages
- => ["Field value \"foo1\" is invalid", "Field value \"bar2\" is invalid"]
+>> record = FormatValidatable.new
+=> #<FormatValidatable:0x007fe3cc0ece70>
+>> record.field = "foo"
+=> "foo"
+>> record.valid?
+=> true
+>> record.field = ["foo"]
+=> ["foo"]
+>> record.valid?
+=> true
+>> record.field = ["foo", "bar"]
+=> ["foo", "bar"]
+>> record.valid?
+=> true
+>> record.field = ["foo1", "bar2"]
+=> ["foo1", "bar2"]
+>> record.valid?
+=> false
+>> puts record.errors.full_messages
+Field value "foo1" is invalid
+Field value "bar2" is invalid
 ```
 
 ### InclusionValidator
@@ -87,20 +96,30 @@ class InclusionValidatable
   # validates_inclusion_of :field, in: ["foo", "bar", "baz"]
 end
 
-> v = InclusionValidatable.new
- => #<InclusionValidatable:0x007ffc53079318> 
-> v.field = ["foo", "bar"]
- => ["foo", "bar"] 
-> v.valid?
- => true 
-> v.field = ["foo", "bar", "spam", "eggs"]
- => ["foo", "bar", "spam", "eggs"] 
-> v.valid?
- => false 
-> v.errors[:field]
- => ["value \"spam\" is not included in the list", "value \"eggs\" is not included in the list"] 
-> v.errors.full_messages
- => ["Field value \"spam\" is not included in the list", "Field value \"eggs\" is not included in the list"]
+>> record = InclusionValidatable.new
+=> #<InclusionValidatable:0x007fe3cbc40098>
+>> record.field = "foo"
+=> "foo"
+>> record.valid?
+=> true
+>> record.field = "foo1"
+=> "foo1"
+>> record.valid?
+=> false
+>> record.field = ["foo"]
+=> ["foo"]
+>> record.valid?
+=> true
+>> record.field = ["foo", "bar"]
+=> ["foo", "bar"]
+>> record.valid?
+=> true
+>> record.field = ["foo", "bar1", "baz"]
+=> ["foo", "bar1", "baz"]
+>> record.valid?
+=> false
+>> puts record.errors.full_messages
+Field value "bar1" is not included in the list
 ```
 
 ### UniquenessValidator
@@ -111,7 +130,7 @@ Intended for ActiveFedora 7.x.
 
 ```ruby
 class UniquenessValidatable < ActiveFedora::Base
-  include Hydra::Validations
+  include Hydra::Validations # ActiveFedora::Base includes ActiveModel::Validations
   has_metadata name: 'descMetadata', type: ActiveFedora::QualifiedDublinCoreDatastream
   has_attributes :title, datastream: 'descMetadata', multiple: false
   # Can use with multi-value attributes, but single cardinality is required.
@@ -149,20 +168,20 @@ class CardinalityValidatable
   # validates_single_cardinality_of :field
 end
 
-> CardinalityValidatable.validators
- => [#<Hydra::Validations::CardinalityValidator:0x007fb91d1e9460 @attributes=[:field], @options={:is=>1}>] 
-> v = Validatable.new
- => #<Validatable:0x007fb91d1c9188> 
-> v.field = "foo"
- => "foo" 
-> v.valid?
- => true 
-> v.field = ["foo"]
- => ["foo"] 
-> v.valid?
- => true 
-> v.field = ["foo", "bar"]
- => ["foo", "bar"] 
-> v.valid?
- => false 
+>> record = CardinalityValidatable.new
+=> #<CardinalityValidatable:0x007fe3cbc632c8>
+>> record.field = "foo"
+=> "foo"
+>> record.valid?
+=> true
+>> record.field = ["foo"]
+=> ["foo"]
+>> record.valid?
+=> true
+>> record.field = ["foo", "bar"]
+=> ["foo", "bar"]
+>> record.valid?
+=> false
+>> puts record.errors.full_messages
+Field has the wrong cardinality (should have 1 value(s))
 ```
