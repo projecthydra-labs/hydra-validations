@@ -56,6 +56,7 @@ end
 >> Validatable.include Hydra::Validations
 >> Validatable.clear_validators!
 >> Validatable.validates_inclusion_of :type, in: %w(text image audio video)
+=> [Hydra::Validations::InclusionValidator]
 
 >> record = Validatable.new
 >> record.type = ["text", "image"]
@@ -83,7 +84,6 @@ end
 >> resource = MyResource.new
 => #<MyResource:0x3fd152026774(default)>
 >> resource.type = "text"
-=> "text"
 >> resource.valid?
 => false # Huh? Oh yeah, resource.type is actually an array ...
 >> resource.type
