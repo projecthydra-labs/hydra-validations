@@ -29,7 +29,7 @@ bundle install
 
 ## EnumerableBehavior Mixin
 
-Hydra::Validations::EnumerableBehavior is a mixin for an ActiveModel::EachValidator that validates each member of an enumerable value.  See the FormatValidator and InclusionValidator below for examples.
+`Hydra::Validations::EnumerableBehavior` is a mixin for an `ActiveModel::EachValidator` that validates each member of an enumerable value.  See the [FormatValidator](#formatvalidator) and [InclusionValidator](#inclusionvalidator) below for examples.
 
 EnumerableBehavior overrides `validate_each(record, attribute, value)` calling `super(record, attribute, member)` for each member of an enumerable value (i.e., responds to `:each`).  The module "fixes" any error messages to include the specific member that failed validation -- for example, `"is invalid"` becomes `"value \"foo1\" is invalid"`, so the full message `"Identifier is invalid"` becomes `"Identifer value \"foo1\" is invalid"`.
 
@@ -43,9 +43,9 @@ See also the source code and spec tests.
 
 ### FormatValidator
 
-Extends the ActiveModel::Validations::FormatValidator, adding EnumerableBehavior.
+Extends `ActiveModel::Validations::FormatValidator`, adding EnumerableBehavior.
 
-See documentation for ActiveModel::Validations::FormatValidator for usage and options.
+See documentation for `ActiveModel::Validations::FormatValidator` for usage and options.
 
 ```ruby
 class FormatValidatable
