@@ -53,10 +53,12 @@ end
 
 # now let's add Hydra::Validations ...
 
->> Validatable.include Hydra::Validations
->> Validatable.clear_validators!
->> Validatable.validates_inclusion_of :type, in: %w(text image audio video)
-=> [Hydra::Validations::InclusionValidator]
+class Validatable
+  include ActiveModel::Validations
+  include Hydra::Validations
+  attr_accessor :type
+  validates_inclusion_of :type, in: %w(text image audio video)
+end
 
 >> record = Validatable.new
 >> record.type = ["text", "image"]
@@ -89,10 +91,11 @@ end
 >> resource.type
 => ["text"]
 
->> MyResource.clear_validators!
->> MyResource.include Hydra::Validations
->> MyResource.validates_inclusion_of :type, in: %w(text image audio video)
-=> [Hydra::Validations::InclusionValidator]
+class MyResource < ActiveTriples::Resource
+  include Hydra::Validations
+  property :type, predicate: RDF::DC.type
+  validates_inclusion_of :type, in: %w(text image audio video)
+end
 
 >> resource = MyResource.new
 => #<MyResource:0x3fd150fe6be8(default)>
