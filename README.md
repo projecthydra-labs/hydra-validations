@@ -53,14 +53,14 @@ end
 
 # now let's add Hydra::Validations ...
 
-class Validatable
+class CorrectlyValidatable
   include ActiveModel::Validations
   include Hydra::Validations
   attr_accessor :type
   validates_inclusion_of :type, in: %w(text image audio video)
 end
 
->> record = Validatable.new
+>> record = CorrectlyValidatable.new
 >> record.type = ["text", "image"]
 >> record.valid?
 => true # Yay!
@@ -84,21 +84,19 @@ class MyResource < ActiveTriples::Resource
 end
 
 >> resource = MyResource.new
-=> #<MyResource:0x3fd152026774(default)>
 >> resource.type = "text"
 >> resource.valid?
 => false # Huh? Oh yeah, resource.type is actually an array ...
 >> resource.type
 => ["text"]
 
-class MyResource < ActiveTriples::Resource
+class YourResource < ActiveTriples::Resource
   include Hydra::Validations
   property :type, predicate: RDF::DC.type
   validates_inclusion_of :type, in: %w(text image audio video)
 end
 
->> resource = MyResource.new
-=> #<MyResource:0x3fd150fe6be8(default)>
+>> resource = YourResource.new
 >> resource.type = "text"
 => "text"
 >> resource.valid?
