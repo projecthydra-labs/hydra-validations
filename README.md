@@ -29,10 +29,11 @@ bundle install
 
 ## Why?
 
-- Metadata values are (often) arrays (XML or RDF)
-- ActiveModel validators don’t work as desired
+- Metadata values are (often) arrays (XML or RDF).
+- ActiveModel validators don't distinguish between array values and scalar values.
+- We want validators that validate each member of an array value.
 
-**Example: `ActiveModel::Validations::InclusionValidator`**
+### Example: PORO with ActiveModel::Validations
 
 ```ruby
 class Validatable
@@ -68,6 +69,45 @@ end
 # tailors error message to specific invalid array value
 >> puts record.errors.full_messages
 Type value "newspaper" is not included in the list
+```
+
+### Example: ActiveTriples::Resource
+
+```ruby
+class MyResource < ActiveTriples::Resource
+  # ActiveTriples::Resource includes ActiveModel::Validations
+  property :type, predicate: RDF::DC.type
+  validates_inclusion_of :type, in: %w(text image audio video)
+end
+
+>> resource = MyResource.new
+=> #<MyResource:0x3fd152026774(default)>
+>> resource.type = "text"
+=> "text"
+>> resource.valid?
+=> false # Huh? Oh yeah, resource.type is actually an array ...
+>> resource.type
+=> ["text"]
+
+>> MyResource.clear_validators!
+>> MyResource.include Hydra::Validations
+>> MyResource.validates_inclusion_of :type, in: %w(text image audio video)
+=> [Hydra::Validations::InclusionValidator]
+
+>> resource = MyResource.new
+=> #<MyResource:0x3fd150fe6be8(default)>
+>> resource.type = "text"
+=> "text"
+>> resource.valid?
+=> true # Yay!
+
+>> resource.type << "newspapers"
+>> resource.type
+=> ["text", "newspapers"]
+>> resource.valid?
+=> false
+>> puts resource.errors.full_messages
+Type value "newspapers" is not included in the list
 ```
 
 ## EnumerableBehavior Mixin
