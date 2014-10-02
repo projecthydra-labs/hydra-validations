@@ -4,7 +4,7 @@ hydra-validations
 [![Build Status](https://travis-ci.org/projecthydra-labs/hydra-validations.svg?branch=master)](https://travis-ci.org/projecthydra-labs/hydra-validations)
 [![Gem Version](https://badge.fury.io/rb/hydra-validations.svg)](http://badge.fury.io/rb/hydra-validations)
 
-Custom validators for Hydra applications, based on ActiveModel::Validations.
+Custom validators based on ActiveModel::Validations, developed for Hydra applications.
 
 ## Dependencies
 
@@ -48,12 +48,10 @@ end
 
 >> record.type = ["text", "image"]
 >> record.valid?
-=> false # not what we want
-```
+=> false # not what we want :(
 
-... add `Hydra::Validations` ...
+# now let's add Hydra::Validations ...
 
-```ruby
 >> Validatable.include Hydra::Validations
 >> Validatable.clear_validators!
 >> Validatable.validates_inclusion_of :type, in: %w(text image audio video)
