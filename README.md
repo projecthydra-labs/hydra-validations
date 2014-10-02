@@ -1,10 +1,10 @@
 hydra-validations
 =======================
 
-Custom validators for Hydra applications, based on ActiveModel::Validations.
-
 [![Build Status](https://travis-ci.org/projecthydra-labs/hydra-validations.svg?branch=master)](https://travis-ci.org/projecthydra-labs/hydra-validations)
 [![Gem Version](https://badge.fury.io/rb/hydra-validations.svg)](http://badge.fury.io/rb/hydra-validations)
+
+Custom validators for Hydra applications, based on ActiveModel::Validations.
 
 ## Dependencies
 
@@ -27,6 +27,51 @@ and
 bundle install
 ```
 
+## Why?
+
+- Metadata values are (often) arrays (XML or RDF)
+- ActiveModel validators don’t work as desired
+
+**Example: `ActiveModel::Validations::InclusionValidator`**
+
+```ruby
+class Validatable
+  include ActiveModel::Validations
+  attr_accessor :type
+  validates_inclusion_of :type, in: %w(text image audio video)
+end
+
+>> record = Validatable.new
+>> record.type = "text"
+>> record.valid?
+=> true
+
+>> record.type = ["text", "image"]
+>> record.valid?
+=> false # not what we want
+```
+
+... add `Hydra::Validations` ...
+
+```ruby
+>> Validatable.include Hydra::Validations
+>> Validatable.clear_validators!
+>> Validatable.validates_inclusion_of :type, in: %w(text image audio video)
+
+>> record = Validatable.new
+>> record.type = ["text", "image"]
+>> record.valid?
+=> true # Yay!
+
+>> record.type = ["text", "newspaper"]
+>> record.valid?
+=> false
+
+# tailors error message to specific invalid array value
+>> puts record.errors.full_messages
+Type value "newspaper" is not included in the list
+```
+
 ## EnumerableBehavior Mixin
 
 `Hydra::Validations::EnumerableBehavior` is a mixin for an `ActiveModel::EachValidator` that validates each member of an enumerable value.  See the [FormatValidator](#formatvalidator) and [InclusionValidator](#inclusionvalidator) below for examples.
@@ -45,7 +90,7 @@ See also the source code and spec tests.
 
 Extends `ActiveModel::Validations::FormatValidator`, adding EnumerableBehavior.
 
-See documentation for `ActiveModel::Validations::FormatValidator` for usage and options.
+See `ActiveModel::Validations::FormatValidator` for usage and options.
 
 ```ruby
 class FormatValidatable
@@ -82,9 +127,9 @@ Field value "bar2" is invalid
 
 ### InclusionValidator
 
-Extends ActiveModel::Validations::InclusionValidator, adding EnumerableBehavior.
+Extends `ActiveModel::Validations::InclusionValidator`, adding EnumerableBehavior.
 
-See documentation for ActiveModel::Validations::InclusionValidator for usage and options.
+See `ActiveModel::Validations::InclusionValidator` for usage and options.
 
 ```ruby
 class InclusionValidatable
@@ -145,7 +190,7 @@ end
 
 Validates the cardinality of the attribute value. 
 
-CardinalityValidator is a subclass of ActiveModel::Validations::LengthValidator which
+CardinalityValidator extends `ActiveModel::Validations::LengthValidator` and
 "tokenizes" values with `Array.wrap(value)`.  The "cardinality" of the value
 is therefore the length the array. Accordingly,
 
