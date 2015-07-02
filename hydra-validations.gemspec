@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "hydra-validations"
   spec.version       = Hydra::Validations::VERSION
   spec.platform      = Gem::Platform::RUBY
-  spec.authors       = ["dchandekstark"]
+  spec.authors       = ["David Chandek-Stark"]
   spec.email         = ["dchandekstark@gmail.com"]
   spec.summary       = %q{Validations for Hydra applications, based on ActiveModel::Validations}
   spec.description   = %q{Validations for Hydra applications, based on ActiveModel::Validations}
-  spec.homepage      = "https://github.com/duke-libraries/hydra-validations"
+  spec.homepage      = "https://github.com/projecthydra-labs/hydra-validations"
   spec.license       = "APACHE2"
   spec.required_ruby_version = ">= 1.9.3"
 
